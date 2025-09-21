@@ -120,6 +120,7 @@ function Home() {
 
       if (response.ok) {
         const createdRoom = await response.json();
+        console.log('Room created successfully:', createdRoom);
         
         // Also save to localStorage for offline access
         const rooms = JSON.parse(localStorage.getItem("chatRooms") || "{}");
@@ -171,7 +172,9 @@ function Home() {
         // Navigate to the room
         navigate(`/room/${pin}`);
       } else {
-        setError("Failed to create room on server");
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Room creation failed:', response.status, errorData);
+        setError(`Failed to create room: ${errorData.error || 'Server error'}`);
       }
     } catch (err) {
       setError("Error creating room");
