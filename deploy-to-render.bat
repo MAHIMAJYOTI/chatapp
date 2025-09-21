@@ -69,7 +69,7 @@ echo 3. 🔧 Environment Variables:
 echo    Backend:
 echo    • NODE_ENV=production
 echo    • PORT=10000
-echo    • MONGODB_URI=your_mongodb_connection_string
+echo    • MONGODB_URI=mongodb+srv://awsproject:awsproject@awsproject.fvreojm.mongodb.net/?retryWrites=true&w=majority&appName=awsproject
 echo    • JDOODLE_CLIENT_ID=your_jdoodle_client_id
 echo    • JDOODLE_CLIENT_SECRET=your_jdoodle_client_secret
 echo.
