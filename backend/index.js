@@ -12,6 +12,7 @@ const io = socketIo(server, {
     origin: [
       "http://localhost:3000",
       "https://awsproject-frontend.onrender.com",
+      "https://awsproject-frontend-q8y2.onrender.com",
       "https://awsproject-t64b.onrender.com",
       "https://jellylemonshake-frontend.onrender.com",
       "https://awsfinalproject-frontend.onrender.com",
@@ -33,6 +34,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000",
     "https://awsproject-frontend.onrender.com",
+    "https://awsproject-frontend-q8y2.onrender.com",
     "https://awsproject-t64b.onrender.com",
     "https://jellylemonshake-frontend.onrender.com",
     "https://awsfinalproject-frontend.onrender.com",
