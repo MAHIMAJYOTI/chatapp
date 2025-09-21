@@ -16,7 +16,7 @@ class SocketService {
       this.socket.disconnect();
     }
 
-    const serverUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+    const serverUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
     console.log('Connecting to Socket.IO server:', serverUrl);
     
     this.socket = io(serverUrl, {

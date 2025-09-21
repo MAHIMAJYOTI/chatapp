@@ -309,7 +309,7 @@ function ChatRoom() {
       setError(null);
       
       try {
-        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
         console.log('Loading messages for room:', roomId);
         
         const response = await fetch(`${apiUrl}/api/rooms/${roomId}/messages?username=${authUser?.username || authUser?.email}`, {
@@ -360,7 +360,7 @@ function ChatRoom() {
           return;
         }
         
-        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
         const userIdentifier = getUserIdentifier();
         console.log('Creating room:', roomId, 'for user:', userIdentifier);
         
@@ -1005,7 +1005,7 @@ function ChatRoom() {
       if (!room) {
         console.log('Room not found in localStorage, checking backend...');
         try {
-          const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+          const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
           const response = await fetch(`${apiUrl}/api/rooms/${roomId}?username=${authUser?.username || authUser?.email}`);
           
           if (response.ok) {
@@ -1088,7 +1088,7 @@ function ChatRoom() {
       if (localMessages.length === 0) {
         console.log('No local messages found, fetching from backend...');
         try {
-          const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+          const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
           const messagesResponse = await fetch(`${apiUrl}/api/rooms/${roomId}/messages?username=${authUser?.username || authUser?.email}`);
           
           if (messagesResponse.ok) {
@@ -1465,7 +1465,7 @@ function ChatRoom() {
     if (!messageSent) {
       console.log('Socket.IO not available, using REST API fallback');
       try {
-        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+        const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
         const response = await fetch(`${apiUrl}/api/rooms/${roomId}/messages`, {
           method: 'POST',
           headers: {
@@ -1571,7 +1571,7 @@ function ChatRoom() {
   // Load admin permissions for the current user
   const loadAdminPermissions = async () => {
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+      const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
       const username = getUserIdentifier();
       
       const response = await fetch(`${apiUrl}/api/rooms/${roomId}/permissions/${username}`);
@@ -2383,7 +2383,7 @@ function ChatRoom() {
                     setIsRunning(true);
                     setRunOutput("");
                     try {
-                      const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend.onrender.com';
+                      const apiUrl = process.env.REACT_APP_API_URL || 'https://awsproject-backend-qqst.onrender.com';
                       const res = await fetch(`${apiUrl}/api/jdoodle/execute`, {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
