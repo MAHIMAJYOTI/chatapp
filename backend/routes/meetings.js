@@ -3,6 +3,10 @@ const router = express.Router();
 const Meeting = require('../models/Meeting');
 const ChatRoom = require('../models/ChatRoom');
 
+// In-memory storage for when MongoDB is not available
+const inMemoryMeetings = new Map();
+let meetingCounter = 1;
+
 // Create a new meeting
 router.post('/create', async (req, res) => {
   try {
@@ -43,7 +47,8 @@ router.post('/create', async (req, res) => {
       scheduledTime: new Date(scheduledTime)
     });
 
-    const meeting = new Meeting({
+    const meetingData = {
+      _id: `meeting_${meetingCounter++}`,
       meetingId,
       title,
       description,
@@ -62,10 +67,20 @@ router.post('/create', async (req, res) => {
       isRecurring: isRecurring || false,
       recurringSettings: recurringSettings || {},
       meetingUrl,
-      status: 'scheduled'
-    });
+      status: 'scheduled',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
 
-    const savedMeeting = await meeting.save();
+    let savedMeeting;
+    try {
+      const meeting = new Meeting(meetingData);
+      savedMeeting = await meeting.save();
+    } catch (error) {
+      console.log('MongoDB not available, using in-memory storage');
+      inMemoryMeetings.set(meetingId, meetingData);
+      savedMeeting = meetingData;
+    }
     console.log('Meeting saved successfully:', savedMeeting._id);
 
     res.status(201).json({
@@ -133,7 +148,13 @@ router.get('/:meetingId', async (req, res) => {
   try {
     const { meetingId } = req.params;
 
-    const meeting = await Meeting.findOne({ meetingId: meetingId }).select('-__v');
+    let meeting;
+    try {
+      meeting = await Meeting.findOne({ meetingId: meetingId }).select('-__v');
+    } catch (error) {
+      console.log('MongoDB not available, checking in-memory storage');
+      meeting = inMemoryMeetings.get(meetingId);
+    }
 
     if (!meeting) {
       return res.status(404).json({
@@ -259,8 +280,15 @@ router.get('/user/:organizer/upcoming', async (req, res) => {
 // Debug endpoint to list all meetings
 router.get('/debug/all', async (req, res) => {
   try {
-    const meetings = await Meeting.find({}).sort({ createdAt: -1 });
-    console.log('All meetings in database:', meetings.length);
+    let meetings;
+    try {
+      meetings = await Meeting.find({}).sort({ createdAt: -1 });
+    } catch (error) {
+      console.log('MongoDB not available, using in-memory storage');
+      meetings = Array.from(inMemoryMeetings.values());
+    }
+    
+    console.log('All meetings:', meetings.length);
     res.json({
       success: true,
       count: meetings.length,
@@ -280,6 +308,52 @@ router.get('/debug/all', async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching meetings',
+      error: error.message
+    });
+  }
+});
+
+// Test endpoint to create a sample meeting
+router.post('/test/create', async (req, res) => {
+  try {
+    const meetingId = 'test_' + Date.now();
+    const meetingData = {
+      _id: `meeting_${meetingCounter++}`,
+      meetingId,
+      title: 'Test Video Call',
+      description: 'This is a test meeting for video call functionality',
+      roomId: 'test-room',
+      organizer: 'Test User',
+      participants: ['Participant 1', 'Participant 2'],
+      scheduledTime: new Date(),
+      duration: 60,
+      settings: {
+        allowScreenShare: true,
+        allowChat: true,
+        requirePassword: false,
+        password: '',
+        maxParticipants: 50
+      },
+      isRecurring: false,
+      recurringSettings: {},
+      meetingUrl: `/meet/${meetingId}`,
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+
+    inMemoryMeetings.set(meetingId, meetingData);
+
+    res.status(201).json({
+      success: true,
+      message: 'Test meeting created successfully',
+      meeting: meetingData
+    });
+  } catch (error) {
+    console.error('Error creating test meeting:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Error creating test meeting',
       error: error.message
     });
   }
