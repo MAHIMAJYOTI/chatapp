@@ -36,7 +36,8 @@ function MeetingsList({ roomId, onClose, isVisible }) {
   };
 
   const joinMeeting = (meetingId) => {
-    window.open(`/meet/${meetingId}`, '_blank');
+    // Navigate to the meeting room in the same tab
+    window.location.href = `/meet/${meetingId}`;
   };
 
   const formatDate = (dateString) => {

@@ -111,9 +111,8 @@ function MeetingScheduler({ roomId, participants, onClose, onMeetingCreated }) {
     setSuccess('');
 
     try {
-      // Convert local datetime to UTC for proper storage
-      const localDateTime = new Date(formData.scheduledTime);
-      const utcDateTime = new Date(localDateTime.getTime() - localDateTime.getTimezoneOffset() * 60000);
+      // Store the scheduled time as UTC (JavaScript Date handles timezone conversion automatically)
+      const scheduledDateTime = new Date(formData.scheduledTime);
       
       const meetingData = {
         title: formData.title.trim(),
@@ -121,7 +120,7 @@ function MeetingScheduler({ roomId, participants, onClose, onMeetingCreated }) {
         roomId,
         organizer: user.username || user.email,
         participants: formData.selectedParticipants,
-        scheduledTime: utcDateTime.toISOString(),
+        scheduledTime: scheduledDateTime.toISOString(),
         duration: parseInt(formData.duration),
         settings: {
           allowScreenShare: formData.allowScreenShare,

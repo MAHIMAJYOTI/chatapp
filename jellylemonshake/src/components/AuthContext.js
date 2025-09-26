@@ -143,7 +143,7 @@ export function AuthProvider({ children }) {
     setUser(guestUser);
   };
 
-  const isAuthenticated = user && !user.isGuest;
+  const isAuthenticated = user !== null; // Allow both registered and guest users
 
   return (
     <AuthContext.Provider value={{ user, isAuthenticated, loading, login, signup, logout }}>

@@ -11,6 +11,22 @@ export const Login = () => {
 
   const { login } = useAuth();
   const navigate = useNavigate();
+  
+  // Get redirect URL from query params or localStorage
+  const getRedirectUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    if (redirect) return redirect;
+    
+    // Check localStorage for meeting redirect
+    const meetingRedirect = localStorage.getItem('meetingRedirect');
+    if (meetingRedirect) {
+      localStorage.removeItem('meetingRedirect');
+      return meetingRedirect;
+    }
+    
+    return "/";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,7 +45,8 @@ export const Login = () => {
     try {
       const result = await login(email, password);
       if (result) {
-        navigate("/");
+        const redirectUrl = getRedirectUrl();
+        navigate(redirectUrl);
       }
     } catch (err) {
       setError(err.message || "Login failed. Please check your credentials.");
@@ -109,6 +126,22 @@ export const Register = () => {
 
   const { signup } = useAuth();
   const navigate = useNavigate();
+  
+  // Get redirect URL from query params or localStorage
+  const getRedirectUrl = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirect = urlParams.get('redirect');
+    if (redirect) return redirect;
+    
+    // Check localStorage for meeting redirect
+    const meetingRedirect = localStorage.getItem('meetingRedirect');
+    if (meetingRedirect) {
+      localStorage.removeItem('meetingRedirect');
+      return meetingRedirect;
+    }
+    
+    return "/";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -164,7 +197,8 @@ export const Register = () => {
         console.log('Email verification sent');
       } else if (result.user) {
         console.log('User registered and logged in:', result.user);
-        navigate("/");
+        const redirectUrl = getRedirectUrl();
+        navigate(redirectUrl);
       }
     } catch (err) {
       console.error('Registration error:', err);
