@@ -125,9 +125,23 @@ router.get('/room/:roomId', async (req, res) => {
       query.status = status;
     }
 
-    const meetings = await Meeting.find(query)
-      .sort({ scheduledTime: 1 })
-      .select('-__v');
+    let meetings;
+    try {
+      meetings = await Meeting.find(query)
+        .sort({ scheduledTime: 1 })
+        .select('-__v');
+    } catch (error) {
+      console.log('MongoDB not available, using in-memory storage');
+      // Filter in-memory meetings by roomId
+      meetings = Array.from(inMemoryMeetings.values())
+        .filter(meeting => meeting.roomId === roomId)
+        .sort((a, b) => new Date(a.scheduledTime) - new Date(b.scheduledTime));
+      
+      // Apply status filter if provided
+      if (status) {
+        meetings = meetings.filter(meeting => meeting.status === status);
+      }
+    }
 
     console.log('Found meetings:', meetings.length);
 
